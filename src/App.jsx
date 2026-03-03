@@ -14,6 +14,19 @@ function App() {
 
   return (
     <div className="app">
+      {/* ── Bannière CP2 : preuve que le Shell Module Federation est actif ── */}
+      <div style={{
+        background: '#10b981',
+        color: '#fff',
+        textAlign: 'center',
+        padding: '10px',
+        fontWeight: 600,
+        fontSize: '14px',
+        letterSpacing: '0.05em',
+      }}>
+        ✅ Shell opérationnel — Module Federation actif
+      </div>
+
       <Navbar notifications={notifications} />
       <main className="main-content">
         <Lobby onJoinGame={handleJoinGame} />
