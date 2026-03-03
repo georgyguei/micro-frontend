@@ -114,4 +114,32 @@ shared: {
 
 ---
 
+## Mission
+
+### mfe-header/webpack.config.js — 4 TODOs
+
+```js
+name: 'mfeHeader',
+filename: 'remoteEntry.js',
+exposes: { './Navbar': './src/components/Navbar' },
+shared: { react: { singleton: true }, 'react-dom': { singleton: true } },
+```
+
+### shell/webpack.config.js — 1 TODO
+
+```js
+remotes: {
+  mfeHeader: 'mfeHeader@http://localhost:3001/remoteEntry.js',
+},
+```
+
+---
+
+## Validation
+
+- http://localhost:3000 affiche le Header chargé depuis le port 3001
+- Push ta branche
+
+---
+
 Bonne chance !
