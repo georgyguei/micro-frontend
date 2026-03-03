@@ -65,7 +65,8 @@ module.exports = {
       shared: {
         react: { singleton: true, requiredVersion: '^18.2.0' },
         'react-dom': { singleton: true, requiredVersion: '^18.2.0' },
-        'shared/eventBus': { singleton: true },
+        // requiredVersion: false empêche l'avertissement Webpack car c'est un fichier local.
+        'shared/eventBus': { singleton: true, requiredVersion: false },
       },
     }),
   ],
