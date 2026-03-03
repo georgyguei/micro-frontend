@@ -3,17 +3,20 @@ const { ModuleFederationPlugin } = require('webpack').container;
 const path = require('path');
 
 module.exports = {
-  entry: './src/bootstrap.js',
+  entry: './src/index.js',
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: 'bundle.js',
-    publicPath: 'auto',
+    filename: '[name].[contenthash].js',
+    publicPath: 'http://localhost:3000/',
     clean: true,
   },
   devServer: {
     port: 3000,
     hot: true,
-    open: true,
+    historyApiFallback: true,
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    },
   },
   module: {
     rules: [
@@ -34,40 +37,27 @@ module.exports = {
     ],
   },
   resolve: {
-    alias: {
-      'shared/eventBus': path.resolve(__dirname, 'src/shared/eventBus.js'),
-    },
     extensions: ['.js', '.jsx'],
+    alias: {
+      shared: path.resolve(__dirname, '../shared'),
+    },
   },
   plugins: [
-    new HtmlWebpackPlugin({
-      template: './public/index.html',
-    }),
-
-    // ============================================================
-    // MODULE FEDERATION — Shell (hôte)
-    // ============================================================
     new ModuleFederationPlugin({
-      // TODO 1 — Nommer le Shell
-      // Identifiant unique de cette app dans la fédération.
-      // Devient window.shell ; les remotes s'y référeront comme hôte.
       name: 'shell',
-
       remotes: {
-        header: 'header@http://localhost:3001/remoteEntry.js',
-        lobby: 'lobby@http://localhost:3002/remoteEntry.js',
-        catalog: 'catalog@http://localhost:3003/remoteEntry.js',
+        mfeHeader: 'mfeHeader@http://localhost:3001/remoteEntry.js',
+        mfeLobby: 'mfeLobby@http://localhost:3002/remoteEntry.js',
+        mfeCatalog: 'mfeCatalog@http://localhost:3003/remoteEntry.js',
+        mfeCart: 'mfeCart@http://localhost:3004/remoteEntry.js',
       },
-
-      // TODO 3 — Partager React en singleton
-      // Garantit qu'une seule instance de React tourne dans tout le navigateur.
-      // Sans singleton: true → les hooks et contextes cassent dès qu'un remote charge.
       shared: {
         react: { singleton: true, requiredVersion: '^18.2.0' },
         'react-dom': { singleton: true, requiredVersion: '^18.2.0' },
-        // requiredVersion: false empêche l'avertissement Webpack car c'est un fichier local.
-        'shared/eventBus': { singleton: true, requiredVersion: false },
       },
+    }),
+    new HtmlWebpackPlugin({
+      template: './public/index.html',
     }),
   ],
 };

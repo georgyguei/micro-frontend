@@ -1,7 +1,6 @@
 {
-  "name": "mfe-lobby",
+  "name": "pixelarena-mfe-lobby",
   "version": "1.0.0",
-  "description": "PixelArena — Micro-Frontend Lobby (Remote)",
   "scripts": {
     "start": "webpack serve --mode development",
     "build": "webpack --mode production"

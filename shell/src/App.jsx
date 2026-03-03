@@ -1,43 +1,51 @@
-import React from 'react';
-import Leaderboard from './components/Leaderboard';
+import React, { Suspense, lazy } from 'react';
 import './App.css';
 
-// Import des micro-frontends distants via Webpack Module Federation
-const Header = React.lazy(() => import('header/Header'));
-const Lobby = React.lazy(() => import('lobby/Lobby'));
-const Catalog = React.lazy(() => import('catalog/Catalog'));
+const Header = lazy(() => import('mfeHeader/Navbar'));
+const Lobby = lazy(() => import('mfeLobby/Lobby'));
+const Catalog = lazy(() => import('mfeCatalog/Catalog'));
+const Cart = lazy(() => import('mfeCart/Cart'));
+
+function LoadingFallback({ name }) {
+  return (
+    <div className="loading-fallback">
+      Chargement {name}...
+    </div>
+  );
+}
 
 function App() {
   return (
-    <div className="app">
-      {/* ── Bannière CP2 : preuve que le Shell Module Federation est actif ── */}
-      <div style={{
-        background: '#10b981',
-        color: '#fff',
-        textAlign: 'center',
-        padding: '10px',
-        fontWeight: 600,
-        fontSize: '14px',
-        letterSpacing: '0.05em',
-      }}>
-        ✅ Shell opérationnel — Module Federation actif
-      </div>
-
-      <React.Suspense fallback={<div style={{ padding: 20 }}>Chargement du Header...</div>}>
+    <div className="shell">
+      <Suspense fallback={<LoadingFallback name="Header" />}>
         <Header />
-      </React.Suspense>
+      </Suspense>
 
-      <main className="main-content">
-        <React.Suspense fallback={<div style={{ padding: 20 }}>Chargement du Lobby...</div>}>
-          <Lobby />
-        </React.Suspense>
+      <main className="shell-content">
+        <div className="content-grid-3">
+          <section className="section">
+            <Suspense fallback={<LoadingFallback name="Lobby" />}>
+              <Lobby />
+            </Suspense>
+          </section>
 
-        <Leaderboard />
+          <section className="section">
+            <Suspense fallback={<LoadingFallback name="Catalog" />}>
+              <Catalog />
+            </Suspense>
+          </section>
 
-        <React.Suspense fallback={<div style={{ padding: 20 }}>Chargement du Catalogue...</div>}>
-          <Catalog />
-        </React.Suspense>
+          <section className="section">
+            <Suspense fallback={<LoadingFallback name="Cart" />}>
+              <Cart />
+            </Suspense>
+          </section>
+        </div>
       </main>
+
+      <footer className="shell-footer">
+        <p>Shell (3000) | Header (3001) | Lobby (3002) | Catalog (3003) | Cart (3004)</p>
+      </footer>
     </div>
   );
 }
