@@ -6,26 +6,17 @@ function Cart() {
   const [items, setItems] = useState([]);
 
   useEffect(() => {
-    // 1. Écoute 'cart:add' et ajoute chaque produit reçu au state items
-    // On retourne la fonction de unsubscribe pour le cleanup React.
     const unsubscribe = eventBus.on('cart:add', (product) => {
-      // On utilise Date.now() + Math.random() pour générer un ID unique par ajout au panier.
-      // Cela permet d'ajouter plusieurs fois le même produit (même product.id)
-      // sans causer de conflits de key (cartId) lors du rendu React.
-      setItems(prevItems => [
-        ...prevItems,
-        { ...product, cartId: Date.now() + Math.random() }
-      ]);
+      setItems(prev => [...prev, { ...product, cartId: Date.now() }]);
     });
-
-    return unsubscribe;
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
-    // 2. Notifie l'eventBus que le panier a changé
-    // L'événement doit contenir le nombre d'articles et le total
-    const total = items.reduce((sum, item) => sum + item.price, 0);
-    eventBus.emit('cart:updated', { count: items.length, total });
+    eventBus.emit('cart:updated', {
+      count: items.length,
+      total: items.reduce((sum, item) => sum + item.price, 0),
+    });
   }, [items]);
 
   const handleRemove = (cartId) => {
