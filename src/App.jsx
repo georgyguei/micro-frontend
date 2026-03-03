@@ -1,17 +1,13 @@
-import React, { useState } from 'react';
-import Navbar from './components/Navbar';
-import Lobby from './components/Lobby';
+import React from 'react';
 import Leaderboard from './components/Leaderboard';
 import './App.css';
 
+// Import des micro-frontends distants via Webpack Module Federation
+const Header = React.lazy(() => import('header/Header'));
+const Lobby = React.lazy(() => import('lobby/Lobby'));
+const Catalog = React.lazy(() => import('catalog/Catalog'));
+
 function App() {
-  const [notifications, setNotifications] = useState(0);
-
-  const handleJoinGame = (gameName) => {
-    setNotifications(prev => prev + 1);
-    alert(`Vous avez rejoint : ${gameName}`);
-  };
-
   return (
     <div className="app">
       {/* ── Bannière CP2 : preuve que le Shell Module Federation est actif ── */}
@@ -27,10 +23,20 @@ function App() {
         ✅ Shell opérationnel — Module Federation actif
       </div>
 
-      <Navbar notifications={notifications} />
+      <React.Suspense fallback={<div style={{ padding: 20 }}>Chargement du Header...</div>}>
+        <Header />
+      </React.Suspense>
+
       <main className="main-content">
-        <Lobby onJoinGame={handleJoinGame} />
+        <React.Suspense fallback={<div style={{ padding: 20 }}>Chargement du Lobby...</div>}>
+          <Lobby />
+        </React.Suspense>
+
         <Leaderboard />
+
+        <React.Suspense fallback={<div style={{ padding: 20 }}>Chargement du Catalogue...</div>}>
+          <Catalog />
+        </React.Suspense>
       </main>
     </div>
   );

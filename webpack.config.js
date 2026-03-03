@@ -53,10 +53,11 @@ module.exports = {
       // Devient window.shell ; les remotes s'y référeront comme hôte.
       name: 'shell',
 
-      // TODO 2 — Préparer les remotes
-      // Vide pour l'instant : les micro-frontends distants arrivent en CP3.
-      // Format futur : { lobby: 'lobby@http://localhost:3001/remoteEntry.js' }
-      remotes: {},
+      remotes: {
+        header: 'header@http://localhost:3001/remoteEntry.js',
+        lobby: 'lobby@http://localhost:3002/remoteEntry.js',
+        catalog: 'catalog@http://localhost:3003/remoteEntry.js',
+      },
 
       // TODO 3 — Partager React en singleton
       // Garantit qu'une seule instance de React tourne dans tout le navigateur.
